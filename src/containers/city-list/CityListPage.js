@@ -5,19 +5,18 @@ import { connect } from 'react-redux'
 import * as actions from './cityListActions'
 
 
-
 class CityListPage extends Component {
 
-  componentWillMount(){
-    this.props.actions.loadCities();
-  }
+    componentWillMount() {
+        this.props.actions.loadCities();
+    }
 
-  handleCityClick(city){
-    //if clicking on loaded city
-    if (this.props.state.events.city && this.props.state.events.city.id === city.id) this.props.actions.clearEvents();
+    handleCityClick(city) {
+        //if clicking on loaded city
+        if (this.props.state.events.city && this.props.state.events.city.id === city.id) this.props.actions.clearEvents();
 
-    else this.props.actions.loadEventsForCoordinates(city.lon, city.lat);
-  }
+        else this.props.actions.loadEventsForCoordinates(city.lon, city.lat);
+    }
 
     render() {
 
@@ -25,50 +24,45 @@ class CityListPage extends Component {
 
 
         const events = state.events.events ?
-            state.events.events.map( event =>
-                (<div key={event.id} >
+            state.events.events.map(event =>
+                (<div key={event.id}>
                     <div className="link-container">
                         <span>{event.local_date} {event.local_time}</span>
                         <a href={event.link}>{event.name}</a>
                     </div>
                 </div>)
-
-
             )
             : (<div/>);
 
         const cities = state.cities.map(city =>
-            (<div className="city-container" key={city.id} >
-                <div onClick={this.handleCityClick.bind(this, city)}>{city.city}</div>
-                { state.events.city && state.events.city.id === city.id && <div className="events-container">{events}</div> }
+            (<div className="city-container" key={city.id}>
+                <div onClick={this.handleCityClick.bind(this, city)} className="city-name">{city.city}</div>
+                {state.events.city && state.events.city.id === city.id &&
+                <div className="events-container">{events}</div>}
             </div>)
-
         );
 
-
-
-        return (<div>
-            <h1>List Page</h1>
-            <ul>
+        return (<div className="list-page-container">
+            <h3>City List</h3>
+            <div>
                 {cities}
-            </ul>
+            </div>
         </div>)
     }
 }
 
 
-//export default ListView
 const mapStateToProps = ({list}) => ({
-  state: list
+    state: list
 });
 
 function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(actions, dispatch)
-  };
+    return {
+        actions: bindActionCreators(actions, dispatch)
+    };
 }
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(CityListPage)
