@@ -13,23 +13,38 @@ class CityListPage extends Component {
 
     handleCityClick(city) {
         //if clicking on loaded city
-        if (this.props.state.events.city && this.props.state.events.city.id === city.id) this.props.actions.clearEvents();
+        if (this.props.state.events.city && this.props.state.events.city.id === city.id) {
+            this.props.actions.clearEvents();
+        } else {
+            this.props.actions.loadEventsForCoordinates(city.lon, city.lat);
+        }
+    }
 
-        else this.props.actions.loadEventsForCoordinates(city.lon, city.lat);
+    handleEventDetailsClick(eventId) {
+        if (this.props.state.visibleDetails.includes(eventId)) {
+            this.props.actions.removeVisibleDetails(eventId);
+        } else {
+            this.props.actions.setVisibleDetails(eventId);
+        }
     }
 
     render() {
 
-        const {state, actions} = this.props;
-
+        const { state } = this.props;
 
         const events = state.events.events ?
             state.events.events.map(event =>
                 (<div key={event.id}>
                     <div className="link-container">
-                        <span>{event.local_date} {event.local_time}</span>
+                        <span className="date-time">{event.local_date} {event.local_time}</span>
                         <a href={event.link}>{event.name}</a>
+                        <span className="details" onClick={ this.handleEventDetailsClick.bind(this, event.id)}>
+                            {!this.props.state.visibleDetails.includes(event.id) && <span>show details</span>}
+                            { this.props.state.visibleDetails.includes(event.id) && <span>hide details</span>}
+                        </span>
                     </div>
+                    { this.props.state.visibleDetails.includes(event.id) &&
+                    <div className="details-container" dangerouslySetInnerHTML={{__html: event.description}} /> }
                 </div>)
             )
             : (<div/>);
@@ -50,7 +65,6 @@ class CityListPage extends Component {
         </div>)
     }
 }
-
 
 const mapStateToProps = ({list}) => ({
     state: list

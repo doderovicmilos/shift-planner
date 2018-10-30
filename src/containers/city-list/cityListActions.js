@@ -5,7 +5,9 @@ import
     LOAD_ERROR,
     LOAD_EVENTS_PENDING,
     LOAD_EVENTS_RESOLVED,
-    CLEAR_EVENTS
+    CLEAR_EVENTS,
+    SET_VISIBLE_DETAILS,
+    REMOVE_VISIBLE_DETAILS
 } from './cityListActionTypes';
 
 import { url, key } from '../../util/constants';
@@ -69,5 +71,20 @@ export const loadEventsForCoordinates = (lon, lat) => {
 export const clearEvents = () => {
     return {
         type: CLEAR_EVENTS
+    }
+};
+
+
+export const setVisibleDetails  = (eventId) => {
+    return {
+        type: SET_VISIBLE_DETAILS,
+        payload: eventId
+    }
+};
+
+export const removeVisibleDetails  = (eventId) => {
+    return {
+        type: REMOVE_VISIBLE_DETAILS,
+        payload: eventId
     }
 };

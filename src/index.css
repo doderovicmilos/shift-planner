@@ -35,15 +35,28 @@ button:disabled {
   background-color: #f8f8f8;
 }
 
+.link-container{
+  margin-right: 30px;
+}
+
 .link-container a{
 
 }
 
-.link-container span{
+.link-container .date-time{
   font-size: 0.8em;
   margin-right: 30px;
+}
+
+.link-container .details{
+  float: right;
 }
 
 .list-page-container h3{
   margin: 10px 0px;
 }
+
+.details-container{
+  padding: 10px;
+}
+

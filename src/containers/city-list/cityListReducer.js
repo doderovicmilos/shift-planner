@@ -4,9 +4,10 @@ import
   LOAD_RESOLVED,
   LOAD_ERROR,
   LOAD_EVENTS_RESOLVED,
-  CLEAR_EVENTS
+  CLEAR_EVENTS,
+  SET_VISIBLE_DETAILS,
+  REMOVE_VISIBLE_DETAILS
 } from './cityListActionTypes';
-
 
 
 const initialState = {
@@ -14,7 +15,8 @@ const initialState = {
   loading: false,
   error: false,
   loaded: false,
-  events: {}
+  events: {},
+  visibleDetails: []
 }
 
 export default (state = initialState, action) => {
@@ -49,6 +51,18 @@ export default (state = initialState, action) => {
             ...state,
             events: {}
         }
+
+      case SET_VISIBLE_DETAILS:
+          return {
+              ...state,
+              visibleDetails: [ ...state.visibleDetails, action.payload ]
+          }
+
+      case REMOVE_VISIBLE_DETAILS:
+          return {
+              ...state,
+              visibleDetails: [ ...state.visibleDetails.filter( el => el !== action.payload ) ]
+          }
 
     default:
       return state
