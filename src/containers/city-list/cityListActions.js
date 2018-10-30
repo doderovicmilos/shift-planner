@@ -2,7 +2,6 @@ import
 {
     LOAD_PENDING,
     LOAD_RESOLVED,
-    LOAD_ERROR,
     LOAD_EVENTS_PENDING,
     LOAD_EVENTS_RESOLVED,
     CLEAR_EVENTS,
@@ -10,36 +9,35 @@ import
     REMOVE_VISIBLE_DETAILS
 } from './cityListActionTypes';
 
-import { url, key } from '../../util/constants';
-import { cities, events } from '../../util/restEndPoints';
+import {url, key} from '../../util/constants';
+import {cities, events} from '../../util/restEndPoints';
 
 
 import axios from 'axios'
 
 
-
 export const loadCities = () => {
-  return dispatch => {
-    dispatch({
-      type: LOAD_PENDING
-    });
-    axios.get( url + cities, {
-      params:{
-        key: key,
-        city: "rs"
-      }
-    })
-    .then(function (response) {
-      console.log(response);
-      dispatch({
-          type: LOAD_RESOLVED,
-          payload: response.data.results
-      })
-    })
-    .catch(function (error) {
-      console.error(error);
-    })
-}};
+    return dispatch => {
+        dispatch({
+            type: LOAD_PENDING
+        });
+        axios.get(url + cities, {
+            params: {
+                key: key,
+                city: "rs"
+            }
+        })
+        .then(function (response) {
+            dispatch({
+                type: LOAD_RESOLVED,
+                payload: response.data.results
+            })
+        })
+        .catch(function (error) {
+            console.error(error);
+        })
+    }
+};
 
 
 export const loadEventsForCoordinates = (lon, lat) => {
@@ -47,7 +45,6 @@ export const loadEventsForCoordinates = (lon, lat) => {
         dispatch({
             type: LOAD_EVENTS_PENDING
         });
-        console.log(url + events);
         axios.get(url + events, {
             params: {
                 key: key,
@@ -55,16 +52,15 @@ export const loadEventsForCoordinates = (lon, lat) => {
                 lat: lat
             }
         })
-            .then(function (response) {
-                console.log(response);
-                dispatch({
-                    type: LOAD_EVENTS_RESOLVED,
-                    payload: response.data
-                })
+        .then(function (response) {
+            dispatch({
+                type: LOAD_EVENTS_RESOLVED,
+                payload: response.data
             })
-            .catch(function (error) {
-                console.error(error);
-            })
+        })
+        .catch(function (error) {
+            console.error(error);
+        })
     }
 };
 
@@ -75,14 +71,14 @@ export const clearEvents = () => {
 };
 
 
-export const setVisibleDetails  = (eventId) => {
+export const setVisibleDetails = (eventId) => {
     return {
         type: SET_VISIBLE_DETAILS,
         payload: eventId
     }
 };
 
-export const removeVisibleDetails  = (eventId) => {
+export const removeVisibleDetails = (eventId) => {
     return {
         type: REMOVE_VISIBLE_DETAILS,
         payload: eventId

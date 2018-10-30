@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+import React, {Component} from 'react'
+import {bindActionCreators} from 'redux'
+import {connect} from 'react-redux'
 
 import * as actions from './cityListActions'
 
@@ -30,7 +30,7 @@ class CityListPage extends Component {
 
     render() {
 
-        const { state } = this.props;
+        const {state} = this.props;
 
         const events = state.events.events ?
             state.events.events.map(event =>
@@ -38,13 +38,13 @@ class CityListPage extends Component {
                     <div className="link-container">
                         <span className="date-time">{event.local_date} {event.local_time}</span>
                         <a href={event.link}>{event.name}</a>
-                        <span className="details" onClick={ this.handleEventDetailsClick.bind(this, event.id)}>
+                        <span className="details" onClick={this.handleEventDetailsClick.bind(this, event.id)}>
                             {!this.props.state.visibleDetails.includes(event.id) && <span>show details</span>}
-                            { this.props.state.visibleDetails.includes(event.id) && <span>hide details</span>}
+                            {this.props.state.visibleDetails.includes(event.id) && <span>hide details</span>}
                         </span>
                     </div>
-                    { this.props.state.visibleDetails.includes(event.id) &&
-                    <div className="details-container" dangerouslySetInnerHTML={{__html: event.description}} /> }
+                    {this.props.state.visibleDetails.includes(event.id) &&
+                    <div className="details-container" dangerouslySetInnerHTML={{__html: event.description}}/>}
                 </div>)
             )
             : (<div/>);
