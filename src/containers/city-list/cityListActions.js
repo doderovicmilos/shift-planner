@@ -8,11 +8,8 @@ import
     SET_VISIBLE_DETAILS,
     REMOVE_VISIBLE_DETAILS
 } from './cityListActionTypes';
-
 import {url, key} from '../../util/constants';
 import {cities, events} from '../../util/restEndPoints';
-
-
 import axios from 'axios'
 
 
@@ -38,7 +35,6 @@ export const loadCities = () => {
         })
     }
 };
-
 
 export const loadEventsForCoordinates = (lon, lat) => {
     return dispatch => {
@@ -69,7 +65,6 @@ export const clearEvents = () => {
         type: CLEAR_EVENTS
     }
 };
-
 
 export const setVisibleDetails = (eventId) => {
     return {
