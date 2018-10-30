@@ -3,7 +3,9 @@ import
     LOAD_PENDING,
     LOAD_RESOLVED,
     LOAD_ERROR,
-    LOAD_EVENTS_PENDING, LOAD_EVENTS_RESOLVED
+    LOAD_EVENTS_PENDING,
+    LOAD_EVENTS_RESOLVED,
+    CLEAR_EVENTS
 } from './cityListActionTypes';
 
 import { url, key } from '../../util/constants';
@@ -16,11 +18,9 @@ import axios from 'axios'
 
 export const loadCities = () => {
   return dispatch => {
-
     dispatch({
       type: LOAD_PENDING
     });
-    //console.log ( url + cities + cityQueryString );
     axios.get( url + cities, {
       params:{
         key: key,
@@ -35,42 +35,39 @@ export const loadCities = () => {
       })
     })
     .catch(function (error) {
-      // handle error
       console.error(error);
     })
-
-
-
 }};
 
 
 export const loadEventsForCoordinates = (lon, lat) => {
-
     return dispatch => {
-
         dispatch({
             type: LOAD_EVENTS_PENDING
         });
-        console.log ( url + events );
-        axios.get( url + events, {
-          params:{
-            key: key,
-            lon: lon,
-            lat: lat
-          }
+        console.log(url + events);
+        axios.get(url + events, {
+            params: {
+                key: key,
+                lon: lon,
+                lat: lat
+            }
         })
-        .then(function (response) {
-            console.log(response);
-            dispatch({
-                type: LOAD_EVENTS_RESOLVED,
-                payload: response.data
+            .then(function (response) {
+                console.log(response);
+                dispatch({
+                    type: LOAD_EVENTS_RESOLVED,
+                    payload: response.data
+                })
             })
-        })
-        .catch(function (error) {
-            // handle error
-            console.error(error);
-        })
+            .catch(function (error) {
+                console.error(error);
+            })
+    }
+};
 
-
-
-    }};
+export const clearEvents = () => {
+    return {
+        type: CLEAR_EVENTS
+    }
+};

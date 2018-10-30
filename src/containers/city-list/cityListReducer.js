@@ -4,6 +4,7 @@ import
   LOAD_RESOLVED,
   LOAD_ERROR,
   LOAD_EVENTS_RESOLVED,
+  CLEAR_EVENTS
 } from './cityListActionTypes';
 
 
@@ -42,6 +43,12 @@ export default (state = initialState, action) => {
         ...state,
         events: { ...action.payload }
       }
+
+      case CLEAR_EVENTS:
+        return {
+            ...state,
+            events: {}
+        }
 
     default:
       return state

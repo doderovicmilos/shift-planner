@@ -25,3 +25,17 @@ button:disabled {
   border-color: #3333;
   border-radius: 2px;
 }
+
+.events-container{
+  padding: 2px 20px;
+}
+
+.link-container a{
+
+}
+
+.link-container span{
+  font-size: 0.8em;
+  margin-right: 30px;
+
+}

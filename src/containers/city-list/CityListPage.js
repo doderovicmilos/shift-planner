@@ -12,8 +12,11 @@ class CityListPage extends Component {
     this.props.actions.loadCities();
   }
 
-  handleCityClick(item){
-    this.props.actions.loadEventsForCoordinates(item.lon, item.lat);
+  handleCityClick(city){
+    //if clicking on loaded city
+    if (this.props.state.events.city && this.props.state.events.city.id === city.id) this.props.actions.clearEvents();
+
+    else this.props.actions.loadEventsForCoordinates(city.lon, city.lat);
   }
 
     render() {
@@ -21,14 +24,24 @@ class CityListPage extends Component {
         const {state, actions} = this.props;
 
 
-        const events = state.events.events ? state.events.events.map(event => <div key={event.id}>{event.name}</div>) : <div/> ;
+        const events = state.events.events ?
+            state.events.events.map( event =>
+                (<div key={event.id} >
+                    <div className="link-container">
+                        <span>{event.local_date} {event.local_time}</span>
+                        <a href={event.link}>{event.name}</a>
+                    </div>
+                </div>)
+
+
+            )
+            : (<div/>);
 
         const cities = state.cities.map(city =>
-            <div className="city-container" key={city.id} onClick={this.handleCityClick.bind(this, city)}>
-                <div>{city.city}</div>
-                { state.events.city && state.events.city.id === city.id && <div>{events}</div> }
-
-            </div>
+            (<div className="city-container" key={city.id} >
+                <div onClick={this.handleCityClick.bind(this, city)}>{city.city}</div>
+                { state.events.city && state.events.city.id === city.id && <div className="events-container">{events}</div> }
+            </div>)
 
         );
 
