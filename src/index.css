@@ -14,3 +14,14 @@ body {
 button:disabled {
   opacity: 0.5;
 }
+
+
+.city-container{
+  cursor: pointer;
+  margin: 5px 0px;
+  padding: 2px 20px;
+  background-color: #00000013;
+  border: solid 1px;
+  border-color: #3333;
+  border-radius: 2px;
+}

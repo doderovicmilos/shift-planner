@@ -4,3 +4,4 @@ export const LOAD_ERROR = "list/LOAD_ERROR";
 
 
 export const LOAD_EVENTS_PENDING = "list/LOAD_EVENTS_PENDING";
+export const LOAD_EVENTS_RESOLVED = "list/LOAD_EVENTS_RESOLVED";

@@ -1,9 +1,9 @@
 import
 {
-  LOAD_PENDING,
-  LOAD_RESOLVED,
-  LOAD_ERROR,
-  LOAD_EVENTS_PENDING
+    LOAD_PENDING,
+    LOAD_RESOLVED,
+    LOAD_ERROR,
+    LOAD_EVENTS_PENDING, LOAD_EVENTS_RESOLVED
 } from './cityListActionTypes';
 
 import { url, key } from '../../util/constants';
@@ -44,7 +44,7 @@ export const loadCities = () => {
 }};
 
 
-export const loadEventsForCordinates = (lon, lat) => {
+export const loadEventsForCoordinates = (lon, lat) => {
 
     return dispatch => {
 
@@ -61,10 +61,10 @@ export const loadEventsForCordinates = (lon, lat) => {
         })
         .then(function (response) {
             console.log(response);
-            // dispatch({
-            //     type: LOAD_RESOLVED,
-            //     payload: response.data.results
-            // })
+            dispatch({
+                type: LOAD_EVENTS_RESOLVED,
+                payload: response.data
+            })
         })
         .catch(function (error) {
             // handle error

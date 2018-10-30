@@ -2,16 +2,18 @@ import
 {
   LOAD_PENDING,
   LOAD_RESOLVED,
-  LOAD_ERROR
+  LOAD_ERROR,
+  LOAD_EVENTS_RESOLVED,
 } from './cityListActionTypes';
 
 
 
 const initialState = {
-  items: [],
+  cities: [],
   loading: false,
   error: false,
-  loaded: false
+  loaded: false,
+  events: {}
 }
 
 export default (state = initialState, action) => {
@@ -25,7 +27,7 @@ export default (state = initialState, action) => {
     case LOAD_RESOLVED:
       return {
         ...state,
-        items: [ ...action.payload ],
+        cities: [ ...action.payload ],
         loaded: true
       }
 
@@ -33,6 +35,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         error: true
+      }
+
+      case LOAD_EVENTS_RESOLVED:
+      return {
+        ...state,
+        events: { ...action.payload }
       }
 
     default:

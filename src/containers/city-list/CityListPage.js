@@ -13,22 +13,34 @@ class CityListPage extends Component {
   }
 
   handleCityClick(item){
-    this.props.actions.loadEventsForCordinates(item.lon, item.lat);
+    this.props.actions.loadEventsForCoordinates(item.lon, item.lat);
   }
 
-  render(){
+    render() {
 
-    const { state, actions } = this.props;
+        const {state, actions} = this.props;
 
-    const cities = state.items.map( item => <li key={item.id} onClick = { this.handleCityClick.bind(this, item) } >{item.city}</li> );
 
-    return (<div>
-              <h1>List Page</h1>
-              <ul>
+        const events = state.events.events ? state.events.events.map(event => <div key={event.id}>{event.name}</div>) : <div/> ;
+
+        const cities = state.cities.map(city =>
+            <div className="city-container" key={city.id} onClick={this.handleCityClick.bind(this, city)}>
+                <div>{city.city}</div>
+                { state.events.city && state.events.city.id === city.id && <div>{events}</div> }
+
+            </div>
+
+        );
+
+
+
+        return (<div>
+            <h1>List Page</h1>
+            <ul>
                 {cities}
-              </ul>
-            </div>)
-  }
+            </ul>
+        </div>)
+    }
 }
 
 
