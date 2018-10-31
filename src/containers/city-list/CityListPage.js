@@ -39,7 +39,6 @@ class CityListPage extends Component {
 
   render()
   {
-
       const {state} = this.props;
 
       const events = state.events.events ?
