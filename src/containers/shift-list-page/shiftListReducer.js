@@ -7,11 +7,15 @@ import
     CLEAR_EVENTS,
     SET_VISIBLE_DETAILS,
     REMOVE_VISIBLE_DETAILS
-} from './cityListActionTypes';
+} from './shiftListActionTypes';
+import Moment from 'moment';
+import { extendMoment } from 'moment-range';
 
+const moment = extendMoment(Moment);
 
 const initialState = {
-    cities: [],
+    shifts: {},
+    displayPeriod: moment.range(moment().startOf('month'), moment().endOf('month')),
     loading: false,
     error: false,
     loaded: false,
@@ -19,7 +23,11 @@ const initialState = {
     visibleDetails: []
 }
 
+
 export default (state = initialState, action) => {
+
+    console.log(action.payload);
+
     switch (action.type) {
         case LOAD_PENDING:
             return {
@@ -30,7 +38,7 @@ export default (state = initialState, action) => {
         case LOAD_RESOLVED:
             return {
                 ...state,
-                cities: [...action.payload],
+                shifts: {...action.payload},
                 loaded: true
             }
 

@@ -1,11 +1,11 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
-import { ListPage } from './containers/city-list'
+import { ShiftListPage } from './containers/shift-list-page'
 
 const App = () => (
     <div className="container">
         <main>
-            <Route exact path="/" component={ListPage}/>
+            <Route exact path="/" component={ShiftListPage}/>
         </main>
     </div>
 )

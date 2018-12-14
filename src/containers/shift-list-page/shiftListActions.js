@@ -7,27 +7,31 @@ import
     CLEAR_EVENTS,
     SET_VISIBLE_DETAILS,
     REMOVE_VISIBLE_DETAILS
-} from './cityListActionTypes';
-import {url, key} from '../../util/constants';
-import {cities, events} from '../../util/restEndPoints';
-import axios from 'axios'
+} from './shiftListActionTypes';
+import {url, key, firebase} from '../../util/constants';
+import {cities, events, shifts} from '../../util/restEndPoints';
+import axios from 'axios';
+import moment from 'moment';
 
+window.axios = axios;
+window.moment = moment;
 
-export const loadCities = () => {
+export const loadShifts = () => {
     return dispatch => {
         dispatch({
             type: LOAD_PENDING
         });
-        axios.get(url + cities, {
+        axios.get(firebase + shifts, {
             params: {
-                key: key,
-                city: "rs"
+                orderBy: '"endTime"',
+                startAt: moment().startOf('week').unix(),
+                endAt: moment().endOf('week').unix()
             }
         })
         .then(function (response) {
             dispatch({
                 type: LOAD_RESOLVED,
-                payload: response.data.results
+                payload: response.data
             })
         })
         .catch(function (error) {
@@ -79,3 +83,4 @@ export const removeVisibleDetails = (eventId) => {
         payload: eventId
     }
 };
+
