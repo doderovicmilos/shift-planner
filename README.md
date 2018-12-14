@@ -1,16 +1,15 @@
-# meetup-city-list-assignment
-Showing  list of cities with with events held in them.
+# shift-planner
+Shift planning proof of concept. Showing  list of list of employees with their planned shifts.
 
 
 This application was built using [create-react-app-redux](https://github.com/notrab/create-react-app-redux) as starting point. 
-It needs [ Allow-Control-Allow-Origin: *](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=en) plugin to run, and cache needs to be cleared if requests will not go through. 
 
 
 ## Installation
 
 ```bash
-git clone https://github.com/doderovicmilos/meetup-city-list-assignment.git
-cd meetup-city-list-assignment
+git clone https://github.com/doderovicmilos/shift-planner.git
+cd shift-planner
 npm install
 ```
 
