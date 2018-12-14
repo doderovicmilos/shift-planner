@@ -24,8 +24,8 @@ export const loadShifts = (from, to) => {
         axios.get(firebase + shifts, {
             params: {
                 orderBy: '"endTime"',
-                startAt: moment().startOf('year').unix(),
-                endAt: moment().endOf('year').unix()
+                startAt: from,
+                endAt: to
             }
         })
         .then(function (response) {

@@ -4,7 +4,7 @@
   .table-container {
 
     margin-top: 60px;
-    max-width: 100%;
+    //max-width: 1124px;
     overflow-x: auto;
 
 
@@ -18,15 +18,39 @@
           font-size: 12px;
           font-weight: 500;
           padding: 0;
-          min-width: 26px;
+          vertical-align: top;
+
+          .day{
+            display: inline-block;
+            text-align: center;
+            min-width: 26px;
+          }
+
+          .month-date{
+            .month{
+              display: inline;
+              //text-align: center;
+              width: 26px;
+            }
+            .date{
+              display: inline;
+              //text-align: center;
+              width: 18px;
+            }
+
+          }
+
+
         }
       }
 
       tbody{
 
         td {
+          text-align: center;
           font-size: 8px;
           padding: 0;
+          width: 26px;
           &.full {
             background-color: darkseagreen;
 

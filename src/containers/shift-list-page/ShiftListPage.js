@@ -11,10 +11,9 @@ class ShiftListPage extends Component {
     componentWillMount()
     {
 
-        // console.log(this.props.state.displayPeriod.start);
-        // console.log(this.props.state.displayPeriod.end);
+        //console.log(this.props.state.displayPeriod.start.unix());
 
-        this.props.actions.loadShifts(this.props.state.displayPeriod.start, this.props.state.displayPeriod.end);
+        this.props.actions.loadShifts(this.props.state.displayPeriod.start.unix(), this.props.state.displayPeriod.end.unix());
     }
 
     handleCityClick(city)
@@ -47,7 +46,7 @@ class ShiftListPage extends Component {
 
         const {state} = this.props;
 
-        const shiftsForEmployee = (shifts,  employeeId) =>
+/*        const shiftsForEmployee = (shifts,  employeeId) =>
         {
             const shiftsForEmployee = {};
             const shiftIdsForEmployee = Object.keys(shifts).filter( shiftId => shifts[shiftId].employeeId === employeeId );
@@ -69,83 +68,65 @@ class ShiftListPage extends Component {
             return shiftsForDay;
         } ;
 
+        const shiftsForEmployeeForDay = (shifts,  employeeId, day) =>
+        {
+            const shiftsForEmployeeForDay = {};
+            const shiftIdsForEmployee = Object.keys(shifts).filter( shiftId => shifts[shiftId].employeeId === employeeId );
+            const shiftIdsForDay = Object.keys(shifts).filter(shiftId => day.format() === moment.unix(shifts[shiftId].endTime).startOf('day').format());
+            const shiftsIdsForEmployeeForDay = shiftIdsForEmployee.filter( shiftIdForEmployee => shiftIdsForDay.find( shiftIdsForDay => shiftIdsForDay === shiftIdForEmployee )  )
+            shiftsIdsForEmployeeForDay.forEach(
+                shiftId => shiftsForEmployeeForDay[shiftId] = shifts[shiftId]
+            );
+            return shiftsForEmployeeForDay;
+        };*/
 
-        const rowForUser = (displayPeriod, userId)=> {
+        const shiftsIdsForEmployee = (shifts,  employeeId) => Object.keys(shifts).filter( shiftId => shifts[shiftId].employeeId === employeeId );
 
-            return displayPeriod.map(ment => {
+        const shiftIdsForDay = (shifts, day) => Object.keys(shifts).filter(shiftId => day.format() === moment.unix(shifts[shiftId].endTime).startOf('day').format());
 
-                //if (shiftsPerEmployee && shiftsPerEmployee[userId] && Object.keys(shiftsPerEmployee[userId]).find(shiftId => ment.format() === moment.unix(shiftsPerEmployee[userId][shiftId].endTime).startOf('day').format())) {
+        const shiftIdsForEmployeeForDay = (shifts,  employeeId, day) => shiftsIdsForEmployee(shifts,  employeeId).filter( shiftIdForEmployee => shiftIdsForDay(shifts, day).find( shiftIdsForDay => shiftIdsForDay === shiftIdForEmployee ) );
 
+        const rowForUser = (shifts, displayPeriod, employeeId) =>
+        {
+            return displayPeriod.map(day =>
+            {
+                if (shiftIdsForEmployeeForDay(shifts, employeeId, day) && shiftIdsForEmployeeForDay(shifts, employeeId, day)[0])
+                {
+                    //console.log( shiftIdsForEmployeeForDay(shifts, employeeId, day).map( id => state.shifts[id] ) );
+                    const shiftIdForDisplay = shiftIdsForEmployeeForDay(shifts, employeeId, day);
 
-                    //console.log(Object.keys(shiftsPerEmployee[userId]).find(shiftId => ment.format() === moment.unix(shiftsPerEmployee[userId][shiftId].endTime).startOf('day').format()));
-
-
-                if(shiftsForEmployee(userId)){
-
-                    var shiftId = Object.keys(shiftsPerEmployee[userId]).find(shiftId => ment.format() === moment.unix(shiftsPerEmployee[userId][shiftId].endTime).startOf('day').format());
-
-                    return (<td key={ment.format('DD-MM-YY')} className={"full"}>
-
-                        <span>{moment.unix(state.shifts[shiftId].startTime).format("HH:mm")}</span>
-                        <span>{moment.unix(state.shifts[shiftId].endTime).format("HH:mm")}</span>
-
-                    </td>)
-
-
-
-
-                } else return (<td key={ment.format('DD-MM-YY')} className={"empty"}></td>)
-
-
+                    return (
+                        <td key={day.format('DD-MM-YY')} className={"full"}>
+                            <div className={"shift-time-container"}><span>{moment.unix(state.shifts[shiftIdForDisplay[0]].startTime).format("HH")}</span> - <span>{moment.unix(state.shifts[shiftIdForDisplay[0]].endTime).format("HH")}</span></div>
+                        </td>
+                    )
+                }
+                else
+                {
+                    return (<td key={day.format('DD-MM-YY')} className={"empty"}></td>)
+                }
             });
-
-
-
-
         };
-
-
 
         const displayPeriod = [ ...state.displayPeriod.by('day') ];
 
-        const employeeIds = [...new Set(Object.keys(state.shifts).map( shiftId => state.shifts[shiftId].employeeId ))];
+        const employeeIds = [ ...new Set(Object.keys(state.shifts).map( shiftId => state.shifts[shiftId].employeeId )) ];
 
-        const shiftsPerEmployee = {};
-
-        employeeIds.forEach( employeeId => {
-
-            shiftsPerEmployee[employeeId] = {};
-
-            const shiftIdsPerEmployee = Object.keys(state.shifts).filter( shiftId => state.shifts[shiftId].employeeId === employeeId );
-
-            shiftIdsPerEmployee.forEach(
-
-                shiftId => shiftsPerEmployee[employeeId][shiftId] = state.shifts[shiftId]
-
-            );
-
-        });
-
-
-        //console.log(shiftsForEmployee(shiftsForDay(state.shifts, moment().startOf('day')), 1));
-        //console.log(shiftsForDay(shiftsForEmployee(state.shifts, 2), moment().startOf('day') ));
-
-
+        const tableRows = employeeIds.map(employeeId => (
+            <tr key={employeeId}>
+                { rowForUser(state.shifts, displayPeriod, employeeId) }
+            </tr>)
+        );
 
         const tableHeader = displayPeriod.map( ment =>
             (<th key={ ment.format('DD-MM-YY')} >
-                { ment.format('ddd MMM DD') }
+                <div className="day">{ ment.format('ddd') }</div>
+                <div className="month-date">
+                    <div className="month">{ ment.format('MMM') }</div>
+                    <div className="date">{ ment.format('DD') }</div>
+                </div>
             </th>)
         );
-
-        // const shifts = displayPeriod.map( moment  =>
-        //     (<div className="shift-container" key={ moment.format('DD-MM-YYYY') }>
-        //      {/*Employee: <span>{ state.shifts[shiftId].employeeId }</span>,
-        //         Date: <span>{ moment.unix(state.shifts[shiftId].endTime).format("ll") }</span>,
-        //         Start: <span>{ moment.unix(state.shifts[shiftId].startTime).format("HH:mm") }</span>,
-        //         End: <span>{ moment.unix(state.shifts[shiftId].endTime).format("HH:mm") }</span>*/}
-        //     </div>)
-        // );
 
         return (
             <div className="list-page-container">
@@ -158,9 +139,7 @@ class ShiftListPage extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                        <tr>{ rowForUser(displayPeriod, 1)}</tr>
-                        <tr>{ rowForUser(displayPeriod, 2)}</tr>
-                        <tr>{ rowForUser(displayPeriod, 3)}</tr>
+                            { tableRows }
                         </tbody>
                     </table>
                 </div>
