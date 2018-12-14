@@ -16,7 +16,7 @@ import moment from 'moment';
 window.axios = axios;
 window.moment = moment;
 
-export const loadShifts = () => {
+export const loadShifts = (from, to) => {
     return dispatch => {
         dispatch({
             type: LOAD_PENDING
@@ -24,8 +24,8 @@ export const loadShifts = () => {
         axios.get(firebase + shifts, {
             params: {
                 orderBy: '"endTime"',
-                startAt: moment().startOf('week').unix(),
-                endAt: moment().endOf('week').unix()
+                startAt: moment().startOf('year').unix(),
+                endAt: moment().endOf('year').unix()
             }
         })
         .then(function (response) {

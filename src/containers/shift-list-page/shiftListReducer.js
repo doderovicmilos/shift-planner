@@ -15,7 +15,7 @@ const moment = extendMoment(Moment);
 
 const initialState = {
     shifts: {},
-    displayPeriod: moment.range(moment().startOf('month'), moment().endOf('month')),
+    displayPeriod: moment.range(moment().startOf('month'), moment().endOf('month').add(-1, 'week')),
     loading: false,
     error: false,
     loaded: false,
@@ -25,8 +25,6 @@ const initialState = {
 
 
 export default (state = initialState, action) => {
-
-    console.log(action.payload);
 
     switch (action.type) {
         case LOAD_PENDING:

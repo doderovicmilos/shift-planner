@@ -10,7 +10,11 @@ class ShiftListPage extends Component {
 
     componentWillMount()
     {
-        this.props.actions.loadShifts();
+
+        // console.log(this.props.state.displayPeriod.start);
+        // console.log(this.props.state.displayPeriod.end);
+
+        this.props.actions.loadShifts(this.props.state.displayPeriod.start, this.props.state.displayPeriod.end);
     }
 
     handleCityClick(city)
@@ -40,85 +44,124 @@ class ShiftListPage extends Component {
 
     render()
     {
+
         const {state} = this.props;
 
-        // const events = state.events.events ?
-        //     state.events.events.map( event =>
-        //         (<div key={event.id}>
-        //             <div className="link-container">
-        //                 <span className="date-time">
-        //                     {event.local_date} {event.local_time}
-        //                 </span>
-        //                 <a href={event.link}>
-        //                     {event.name}
-        //                 </a>
-        //                 <span className="details" onClick={this.handleEventDetailsClick.bind(this, event.id)}>
-        //                     {
-        //                         !this.props.state.visibleDetails.includes(event.id) &&
-        //                         <span>show details</span>
-        //                     }
-        //                     {
-        //                         this.props.state.visibleDetails.includes(event.id) &&
-        //                         <span>hide details</span>
-        //                     }
-        //                 </span>
-        //             </div>
-        //             {
-        //                 this.props.state.visibleDetails.includes(event.id) &&
-        //                 <div className="details-container" dangerouslySetInnerHTML={{__html: event.description}}/>
-        //             }
-        //         </div>)
-        //     )
-        //     :
-        //     (<div/>);
+        const shiftsForEmployee = (shifts,  employeeId) =>
+        {
+            const shiftsForEmployee = {};
+            const shiftIdsForEmployee = Object.keys(shifts).filter( shiftId => shifts[shiftId].employeeId === employeeId );
+            shiftIdsForEmployee.forEach(
+                shiftId => shiftsForEmployee[shiftId] = shifts[shiftId]
+            );
+
+            return shiftsForEmployee;
+        };
+
+        //given object with shifts extracts all shifts ended that day (day is moment set to start of day)
+        const shiftsForDay = (shifts, day) =>
+        {
+            const shiftsForDay = {};
+            const shiftIdsForDay = Object.keys(shifts).filter(shiftId => day.format() === moment.unix(shifts[shiftId].endTime).startOf('day').format());
+            shiftIdsForDay.forEach(
+                shiftId => shiftsForDay[shiftId] = shifts[shiftId]
+            );
+            return shiftsForDay;
+        } ;
 
 
-        //for (let day of state.displayPeriod.by('day')) {
-          console.log([...state.displayPeriod.by('day')]);
-        //}
+        const rowForUser = (displayPeriod, userId)=> {
+
+            return displayPeriod.map(ment => {
+
+                //if (shiftsPerEmployee && shiftsPerEmployee[userId] && Object.keys(shiftsPerEmployee[userId]).find(shiftId => ment.format() === moment.unix(shiftsPerEmployee[userId][shiftId].endTime).startOf('day').format())) {
+
+
+                    //console.log(Object.keys(shiftsPerEmployee[userId]).find(shiftId => ment.format() === moment.unix(shiftsPerEmployee[userId][shiftId].endTime).startOf('day').format()));
+
+
+                if(shiftsForEmployee(userId)){
+
+                    var shiftId = Object.keys(shiftsPerEmployee[userId]).find(shiftId => ment.format() === moment.unix(shiftsPerEmployee[userId][shiftId].endTime).startOf('day').format());
+
+                    return (<td key={ment.format('DD-MM-YY')} className={"full"}>
+
+                        <span>{moment.unix(state.shifts[shiftId].startTime).format("HH:mm")}</span>
+                        <span>{moment.unix(state.shifts[shiftId].endTime).format("HH:mm")}</span>
+
+                    </td>)
+
+
+
+
+                } else return (<td key={ment.format('DD-MM-YY')} className={"empty"}></td>)
+
+
+            });
+
+
+
+
+        };
 
 
 
         const displayPeriod = [ ...state.displayPeriod.by('day') ];
-        
-        const tableHeader = displayPeriod.map( moment =>
-            (<td key={ moment.format('DD-MM-YY')} >
-                { moment.format('ll') }
-            </td>)
+
+        const employeeIds = [...new Set(Object.keys(state.shifts).map( shiftId => state.shifts[shiftId].employeeId ))];
+
+        const shiftsPerEmployee = {};
+
+        employeeIds.forEach( employeeId => {
+
+            shiftsPerEmployee[employeeId] = {};
+
+            const shiftIdsPerEmployee = Object.keys(state.shifts).filter( shiftId => state.shifts[shiftId].employeeId === employeeId );
+
+            shiftIdsPerEmployee.forEach(
+
+                shiftId => shiftsPerEmployee[employeeId][shiftId] = state.shifts[shiftId]
+
+            );
+
+        });
+
+
+        //console.log(shiftsForEmployee(shiftsForDay(state.shifts, moment().startOf('day')), 1));
+        //console.log(shiftsForDay(shiftsForEmployee(state.shifts, 2), moment().startOf('day') ));
+
+
+
+        const tableHeader = displayPeriod.map( ment =>
+            (<th key={ ment.format('DD-MM-YY')} >
+                { ment.format('ddd MMM DD') }
+            </th>)
         );
 
-
-        const shifts = displayPeriod.map( moment  =>
-            (<div className="shift-container" key={ moment.format('DD-MM-YYYY') }>
-                {/*<div onClick={this.handleCityClick.bind(this, city)} className="city-name">*/}
-                    {/*{city.city}*/}
-                {/*</div>*/}
-                {/*{*/}
-                    {/*state.events.city && state.events.city.id === city.id &&*/}
-                    {/*<div className="events-container">{events}</div>*/}
-                {/*}*/}
-
-
-                 {  }
-
-
-{/*                Employee: <span>{ state.shifts[shiftId].employeeId }</span>,
-                Date: <span>{ moment.unix(state.shifts[shiftId].endTime).format("ll") }</span>,
-                Start: <span>{ moment.unix(state.shifts[shiftId].startTime).format("HH:mm") }</span>,
-                End: <span>{ moment.unix(state.shifts[shiftId].endTime).format("HH:mm") }</span>*/}
-
-          </div>)
-        );
+        // const shifts = displayPeriod.map( moment  =>
+        //     (<div className="shift-container" key={ moment.format('DD-MM-YYYY') }>
+        //      {/*Employee: <span>{ state.shifts[shiftId].employeeId }</span>,
+        //         Date: <span>{ moment.unix(state.shifts[shiftId].endTime).format("ll") }</span>,
+        //         Start: <span>{ moment.unix(state.shifts[shiftId].startTime).format("HH:mm") }</span>,
+        //         End: <span>{ moment.unix(state.shifts[shiftId].endTime).format("HH:mm") }</span>*/}
+        //     </div>)
+        // );
 
         return (
             <div className="list-page-container">
-                <h3>City List</h3>
+
                 <div className="table-container">
-                    <table >
+                    <table className={"table"}>
                         <thead>
-                            { tableHeader }
+                            <tr>
+                                { tableHeader }
+                            </tr>
                         </thead>
-                        {shifts}
+                        <tbody>
+                        <tr>{ rowForUser(displayPeriod, 1)}</tr>
+                        <tr>{ rowForUser(displayPeriod, 2)}</tr>
+                        <tr>{ rowForUser(displayPeriod, 3)}</tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
