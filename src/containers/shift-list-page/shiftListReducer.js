@@ -15,7 +15,7 @@ const moment = extendMoment(Moment);
 
 const initialState = {
     shifts: {},
-    displayPeriod: moment.range(moment().startOf('week'), moment().endOf('month')),
+    displayPeriod: moment.range(moment().startOf('week'), moment().endOf('week')),
     loading: false,
     error: false,
     loaded: false,

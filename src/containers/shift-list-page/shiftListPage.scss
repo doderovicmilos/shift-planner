@@ -28,12 +28,12 @@
 
           .month-date{
             .month{
-              display: inline;
+              display: inline-block;
               //text-align: center;
               width: 26px;
             }
             .date{
-              display: inline;
+              display: inline-block;
               //text-align: center;
               width: 18px;
             }
