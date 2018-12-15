@@ -19,7 +19,7 @@ const ShiftForm = props => {
                       <Field
                           id="startDate"
                           className="form-control form-control-sm"
-                          name="start"
+                          name="startTime"
                           component="input"
                           type="number"
                           placeholder="start time"
@@ -30,7 +30,7 @@ const ShiftForm = props => {
                       <Field
                           id="endDate"
                           className="form-control form-control-sm"
-                          name="end"
+                          name="endTime"
                           component="input"
                           type="number"
                           placeholder="end time"

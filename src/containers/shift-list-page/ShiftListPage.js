@@ -4,13 +4,12 @@ import {connect} from 'react-redux'
 import * as actions from './shiftListActions'
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
-
 import Popover from 'react-popover';
-
 import ShiftForm from './components/ShiftForm'
 
-
 const moment = extendMoment(Moment)
+
+
 
 class ShiftListPage extends Component {
 
@@ -29,8 +28,20 @@ class ShiftListPage extends Component {
         this.props.actions.selectShift(args)
     }
 
-    handleSubmit(){
-        console.log("dfsbvf");
+    handleFormSubmit(data){
+
+        const { shiftId, day, employeeId } = this.props.state.selectedShift;
+
+        const startTime = day.clone().hours(data.startTime).unix();
+        const endTime = day.clone().hours(data.endTime).unix();
+
+        //if(this.props.state.selectedShift.shiftId) this.props.actions.updateShift({ ...data });
+        //console.log( moment.unix(startTime).format() );
+        //console.log( moment.unix(endTime).format() );
+
+
+        this.props.actions.createShift({ shiftId, employeeId, startTime, endTime });
+
     }
 
     render()
@@ -49,10 +60,10 @@ class ShiftListPage extends Component {
                     return (
                         <td key={day.format('DD-MM-YY')} className={"full"}>
                             <Popover
-                                body={ (<ShiftForm
-                                            onSubmit={ this.handleSubmit.bind(this) }
-
-                                        />) }
+                                body={(<ShiftForm
+                                    onSubmit={this.handleFormSubmit.bind(this)}
+                                    enableReinitialise={true}
+                                />)}
                                 isOpen={ state.selectedShift && state.selectedShift.day && state.selectedShift.employeeId && state.selectedShift.employeeId === employeeId && state.selectedShift.day.isSame(day) }
                             >
                                 <div className={"shift-time-container"}
@@ -81,8 +92,11 @@ class ShiftListPage extends Component {
                     return (
                         <td key={day.format('DD-MM-YY')} className={"empty"}>
                             <Popover
-                                body={ (<ShiftForm/>) }
-                                isOpen={ state.selectedShift && state.selectedShift.day && state.selectedShift.employeeId && state.selectedShift.employeeId === employeeId && state.selectedShift.day.isSame(day) }
+                                body={(<ShiftForm
+                                    onSubmit={this.handleFormSubmit.bind(this)}
+                                    enableReinitialise={true}
+                                />)}
+                                isOpen={state.selectedShift && state.selectedShift.day && state.selectedShift.employeeId && state.selectedShift.employeeId === employeeId && state.selectedShift.day.isSame(day)}
                             >
                                 <div className={"shift-time-container"}
                                      onClick={ this.handleShiftPlaceholderClick.bind(this,

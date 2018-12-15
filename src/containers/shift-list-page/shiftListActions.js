@@ -12,6 +12,8 @@ import {cities, events, shifts} from '../../util/restEndPoints';
 import axios from 'axios';
 import moment from 'moment';
 
+
+window.axios = axios;
 window.moment = moment;
 
 export const loadShifts = () => {
@@ -39,7 +41,7 @@ export const loadShifts = () => {
     }
 };
 
-export const changeDisplayPeriod = ({value = 1, increment = "week", direction = "right"}={}) => {
+export const changeDisplayPeriod = ({value = 1, increment = "day", direction = "right"}={}) => {
     return dispatch => {
         dispatch({
             type: DISPLAY_PERIOD_CHANGE,
@@ -58,36 +60,20 @@ export const selectShift = ({shiftId, day, employeeId, startTime, endTime}) => {
 };
 
 
-export const createShift = ({shiftId, day, employeeId, startTime, endTime}) => {
+export const createShift = ({shiftId, employeeId, startTime, endTime}) => {
 
-    //console.log(shiftId, day, employeeId, startTime, endTime);
+    console.log({shiftId, employeeId, startTime, endTime});
 
-    console.log( day.format() );
-
-    console.log( moment.unix(day.clone().add(8, 'hours').unix()).format() );
-
-    console.log( moment.unix(day.clone().add(16, 'hour').unix()).format() );
-
-    console.log( day.format() );
-
-
-    var shift = {};
-
-    shift.start = day.clone();
-    shift.start = day.clone();
+    const data = { employeeId, startTime, endTime };
 
     return dispatch => {
         dispatch({
             type: CREATE_PENDING
         });
         axios({
-            method: 'post',
-            url: "https://shift-planner-a7968.firebaseio.com/shifts.json",
-            data: {
-                employeeId: employeeId,
-                startTime: day.clone().add(8, 'hours').unix(),
-                endTime: day.clone().add(16, 'hours').unix()
-            }
+            method: shiftId ? 'put' : 'post',
+            url: shiftId ? "https://shift-planner-a7968.firebaseio.com/shifts/" + shiftId + ".json" : "https://shift-planner-a7968.firebaseio.com/shifts.json",
+            data
         })
         .then(function (response) {
             dispatch({
@@ -95,6 +81,8 @@ export const createShift = ({shiftId, day, employeeId, startTime, endTime}) => {
                 payload: response.data
             });
             dispatch(loadShifts());
+            dispatch(selectShift({}));
+
         })
         .catch(function (error) {
             console.error(error);
