@@ -2,11 +2,8 @@ import
 {
     LOAD_PENDING,
     LOAD_RESOLVED,
-    LOAD_ERROR,
-    LOAD_EVENTS_RESOLVED,
-    CLEAR_EVENTS,
-    SET_VISIBLE_DETAILS,
-    REMOVE_VISIBLE_DETAILS
+    DISPLAY_PERIOD_CHANGE,
+    SHIFT_SELECTED
 } from './shiftListActionTypes';
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
@@ -17,10 +14,8 @@ const initialState = {
     shifts: {},
     displayPeriod: moment.range(moment().startOf('week'), moment().endOf('week')),
     loading: false,
-    error: false,
     loaded: false,
-    events: {},
-    visibleDetails: []
+    selectedShift: {}
 }
 
 
@@ -37,40 +32,52 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 shifts: {...action.payload},
+                loading: false,
                 loaded: true
             }
 
-        case LOAD_ERROR:
+
+        case DISPLAY_PERIOD_CHANGE:
             return {
                 ...state,
-                error: true
+                displayPeriod: action.payload.direction === 'right'
+                    ?
+                    moment.range(moment(state.displayPeriod.start), moment(state.displayPeriod.end.add(action.payload.value, action.payload.increment)))
+                    :
+                    moment.range(moment(state.displayPeriod.start.add(-action.payload.value, action.payload.increment)), moment(state.displayPeriod.end))
             }
 
-        case LOAD_EVENTS_RESOLVED:
+        case SHIFT_SELECTED:
             return {
                 ...state,
-                events: {...action.payload},
-                visibleDetails: []
+                selectedShift: { ...action.payload }
             }
 
-        case CLEAR_EVENTS:
-            return {
-                ...state,
-                events: {},
-                visibleDetails: []
-            }
-
-        case SET_VISIBLE_DETAILS:
-            return {
-                ...state,
-                visibleDetails: [...state.visibleDetails, action.payload]
-            }
-
-        case REMOVE_VISIBLE_DETAILS:
-            return {
-                ...state,
-                visibleDetails: [...state.visibleDetails.filter(el => el !== action.payload)]
-            }
+        // case LOAD_EVENTS_RESOLVED:
+        //     return {
+        //         ...state,
+        //         events: {...action.payload},
+        //         visibleDetails: []
+        //     }
+        //
+        // case CLEAR_EVENTS:
+        //     return {
+        //         ...state,
+        //         events: {},
+        //         visibleDetails: []
+        //     }
+        //
+        // case SET_VISIBLE_DETAILS:
+        //     return {
+        //         ...state,
+        //         visibleDetails: [...state.visibleDetails, action.payload]
+        //     }
+        //
+        // case REMOVE_VISIBLE_DETAILS:
+        //     return {
+        //         ...state,
+        //         visibleDetails: [...state.visibleDetails.filter(el => el !== action.payload)]
+        //     }
 
         default:
             return state

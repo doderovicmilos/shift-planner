@@ -1,67 +1,62 @@
 
-.list-page-container {
+.list-page {
 
   .table-container {
-
     margin-top: 60px;
-    //max-width: 1124px;
     overflow-x: auto;
-
-
-
     table {
-
       thead {
-
         th {
           text-align: center;
           font-size: 12px;
           font-weight: 500;
           padding: 0;
           vertical-align: top;
-
-          .day{
-            display: inline-block;
-            text-align: center;
-            min-width: 26px;
-          }
-
-          .month-date{
-            .month{
+          min-width: 45px;
+          .day-month-date{
+            min-height: 36px;
+            .day{
               display: inline-block;
-              //text-align: center;
-              width: 26px;
+              text-align: center;
+              min-width: 26px;
             }
-            .date{
-              display: inline-block;
-              //text-align: center;
-              width: 18px;
-            }
+            .month-date{
+              .month{
+                display: inline-block;
 
+                width: 26px;
+              }
+              .date{
+                display: inline-block;
+                width: 18px;
+              }
+            }
           }
-
-
         }
       }
 
       tbody{
-
         td {
           text-align: center;
-          font-size: 8px;
+          font-size: 11px;
           padding: 0;
           width: 26px;
+          height: 17px;
           &.full {
             background-color: darkseagreen;
-
           }
         }
-
-
       }
-
     }
 
+  }
+
+  .add-remove-button-groups {
+    display: flex;
+    justify-content: space-between;
+    button{
+      line-height: 0.7;
+    }
   }
 
 }

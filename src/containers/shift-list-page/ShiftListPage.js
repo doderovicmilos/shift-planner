@@ -4,87 +4,40 @@ import {connect} from 'react-redux'
 import * as actions from './shiftListActions'
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
+
+import Popover from 'react-popover';
+
+import ShiftForm from './components/ShiftForm'
+
+
 const moment = extendMoment(Moment)
 
 class ShiftListPage extends Component {
 
     componentWillMount()
     {
-
-        //console.log(this.props.state.displayPeriod.start.unix());
-
-        this.props.actions.loadShifts(this.props.state.displayPeriod.start.unix(), this.props.state.displayPeriod.end.unix());
+        this.props.actions.loadShifts();
     }
 
-    handleCityClick(city)
+    handlePeriodButtonClick(args)
     {
-        //if clicking on loaded city
-        if (this.props.state.events.city && this.props.state.events.city.id === city.id)
-        {
-            this.props.actions.clearEvents();
-        }
-        else
-        {
-            this.props.actions.loadEventsForCoordinates(city.lon, city.lat);
-        }
+        this.props.actions.changeDisplayPeriod(args);
     }
 
-    handleEventDetailsClick(eventId)
+    handleShiftPlaceholderClick(args)
     {
-        if (this.props.state.visibleDetails.includes(eventId))
-        {
-            this.props.actions.removeVisibleDetails(eventId);
-        }
-        else
-        {
-            this.props.actions.setVisibleDetails(eventId);
-        }
+        this.props.actions.selectShift(args)
+    }
+
+    handleSubmit(){
+        console.log("dfsbvf");
     }
 
     render()
     {
+        const { state } = this.props;
 
-        const {state} = this.props;
-
-/*        const shiftsForEmployee = (shifts,  employeeId) =>
-        {
-            const shiftsForEmployee = {};
-            const shiftIdsForEmployee = Object.keys(shifts).filter( shiftId => shifts[shiftId].employeeId === employeeId );
-            shiftIdsForEmployee.forEach(
-                shiftId => shiftsForEmployee[shiftId] = shifts[shiftId]
-            );
-
-            return shiftsForEmployee;
-        };
-
-        //given object with shifts extracts all shifts ended that day (day is moment set to start of day)
-        const shiftsForDay = (shifts, day) =>
-        {
-            const shiftsForDay = {};
-            const shiftIdsForDay = Object.keys(shifts).filter(shiftId => day.format() === moment.unix(shifts[shiftId].endTime).startOf('day').format());
-            shiftIdsForDay.forEach(
-                shiftId => shiftsForDay[shiftId] = shifts[shiftId]
-            );
-            return shiftsForDay;
-        } ;
-
-        const shiftsForEmployeeForDay = (shifts,  employeeId, day) =>
-        {
-            const shiftsForEmployeeForDay = {};
-            const shiftIdsForEmployee = Object.keys(shifts).filter( shiftId => shifts[shiftId].employeeId === employeeId );
-            const shiftIdsForDay = Object.keys(shifts).filter(shiftId => day.format() === moment.unix(shifts[shiftId].endTime).startOf('day').format());
-            const shiftsIdsForEmployeeForDay = shiftIdsForEmployee.filter( shiftIdForEmployee => shiftIdsForDay.find( shiftIdsForDay => shiftIdsForDay === shiftIdForEmployee )  )
-            shiftsIdsForEmployeeForDay.forEach(
-                shiftId => shiftsForEmployeeForDay[shiftId] = shifts[shiftId]
-            );
-            return shiftsForEmployeeForDay;
-        };*/
-
-        const shiftsIdsForEmployee = (shifts,  employeeId) => Object.keys(shifts).filter( shiftId => shifts[shiftId].employeeId === employeeId );
-
-        const shiftIdsForDay = (shifts, day) => Object.keys(shifts).filter(shiftId => day.format() === moment.unix(shifts[shiftId].endTime).startOf('day').format());
-
-        const shiftIdsForEmployeeForDay = (shifts,  employeeId, day) => shiftsIdsForEmployee(shifts,  employeeId).filter( shiftIdForEmployee => shiftIdsForDay(shifts, day).find( shiftIdsForDay => shiftIdsForDay === shiftIdForEmployee ) );
+        const shiftIdsForEmployeeForDay = (shifts,  employeeId, day) => Object.keys(shifts).filter( shiftId => shifts[shiftId].employeeId === employeeId && moment.unix(shifts[shiftId].endTime).startOf('day').isSame(day) );
 
         const rowForUser = (shifts, displayPeriod, employeeId) =>
         {
@@ -92,18 +45,59 @@ class ShiftListPage extends Component {
             {
                 if (shiftIdsForEmployeeForDay(shifts, employeeId, day) && shiftIdsForEmployeeForDay(shifts, employeeId, day)[0])
                 {
-                    //console.log( shiftIdsForEmployeeForDay(shifts, employeeId, day).map( id => state.shifts[id] ) );
                     const shiftIdForDisplay = shiftIdsForEmployeeForDay(shifts, employeeId, day);
-
                     return (
                         <td key={day.format('DD-MM-YY')} className={"full"}>
-                            <div className={"shift-time-container"}><span>{moment.unix(state.shifts[shiftIdForDisplay[0]].startTime).format("HH")}</span> - <span>{moment.unix(state.shifts[shiftIdForDisplay[0]].endTime).format("HH")}</span></div>
+                            <Popover
+                                body={ (<ShiftForm
+                                            onSubmit={ this.handleSubmit.bind(this) }
+
+                                        />) }
+                                isOpen={ state.selectedShift && state.selectedShift.day && state.selectedShift.employeeId && state.selectedShift.employeeId === employeeId && state.selectedShift.day.isSame(day) }
+                            >
+                                <div className={"shift-time-container"}
+                                     onClick={
+                                         this.handleShiftPlaceholderClick.bind(this,
+                                         {
+                                             shiftId: shiftIdForDisplay[0],
+                                             day,
+                                             employeeId,
+                                             startTime: moment.unix(state.shifts[shiftIdForDisplay[0]].startTime),
+                                             endTime: moment.unix(state.shifts[shiftIdForDisplay[0]].endTime)
+                                         })
+                                     }
+                                >
+                                    <span>{moment.unix(state.shifts[shiftIdForDisplay[0]].startTime).format("HH")}</span>
+                                     -
+                                    <span>{moment.unix(state.shifts[shiftIdForDisplay[0]].endTime).format("HH")}</span>
+                                </div>
+                            </Popover>
+
                         </td>
                     )
                 }
                 else
                 {
-                    return (<td key={day.format('DD-MM-YY')} className={"empty"}></td>)
+                    return (
+                        <td key={day.format('DD-MM-YY')} className={"empty"}>
+                            <Popover
+                                body={ (<ShiftForm/>) }
+                                isOpen={ state.selectedShift && state.selectedShift.day && state.selectedShift.employeeId && state.selectedShift.employeeId === employeeId && state.selectedShift.day.isSame(day) }
+                            >
+                                <div className={"shift-time-container"}
+                                     onClick={ this.handleShiftPlaceholderClick.bind(this,
+                                         {
+                                         shiftId: null,
+                                         day,
+                                         employeeId,
+                                         startTime: null,
+                                         endTime: null
+                                     })}
+                                > -
+                                </div>
+                            </Popover>
+                        </td>
+                    )
                 }
             });
         };
@@ -120,16 +114,18 @@ class ShiftListPage extends Component {
 
         const tableHeader = displayPeriod.map( ment =>
             (<th key={ ment.format('DD-MM-YY')} >
-                <div className="day">{ ment.format('ddd') }</div>
-                <div className="month-date">
-                    <div className="month">{ ment.format('MMM') }</div>
-                    <div className="date">{ ment.format('DD') }</div>
+                <div className="day-month-date">
+                    <div className="day">{ ment.format('ddd') }</div>
+                    <div className="month-date">
+                        <div className="month">{ ment.format('MMM') }</div>
+                        <div className="date">{ ment.format('DD') }</div>
+                    </div>
                 </div>
             </th>)
         );
 
         return (
-            <div className="list-page-container">
+            <div className="list-page">
 
                 <div className="table-container">
                     <table className={"table"}>
@@ -142,6 +138,20 @@ class ShiftListPage extends Component {
                             { tableRows }
                         </tbody>
                     </table>
+                </div>
+
+                <div className="add-remove-button-groups">
+                    <div className="btn-group left">
+                        <button className="btn btn-sm" onClick={ this.handlePeriodButtonClick.bind(this, {direction: "left", value: 1}) }>+</button>
+                        <button className="btn btn-sm" onClick={ this.handlePeriodButtonClick.bind(this, {direction: "left", value:-1}) }
+                                                       disabled={ displayPeriod.length <= 1 }>-</button>
+                    </div>
+
+                    <div className="btn-group right">
+                        <button className="btn btn-sm" onClick={ this.handlePeriodButtonClick.bind(this, {direction: "right", value:-1}) }
+                                                       disabled={ displayPeriod.length <= 1 }>-</button>
+                        <button className="btn btn-sm" onClick={ this.handlePeriodButtonClick.bind(this, {direction: "right", value: 1}) }>+</button>
+                    </div>
                 </div>
             </div>
         )
@@ -163,3 +173,4 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(ShiftListPage)
+
