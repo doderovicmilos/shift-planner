@@ -57,6 +57,9 @@ class ShiftListPage extends Component {
                 if (shiftIdsForEmployeeForDay(shifts, employeeId, day) && shiftIdsForEmployeeForDay(shifts, employeeId, day)[0])
                 {
                     const shiftIdForDisplay = shiftIdsForEmployeeForDay(shifts, employeeId, day);
+
+                    console.log(((state.shifts[shiftIdForDisplay[0]].endTime - state.shifts[shiftIdForDisplay[0]].startTime)/864));
+
                     return (
                         <td key={day.format('DD-MM-YY')} className={"full"}>
                             <Popover
@@ -67,6 +70,7 @@ class ShiftListPage extends Component {
                                 isOpen={ state.selectedShift && state.selectedShift.day && state.selectedShift.employeeId && state.selectedShift.employeeId === employeeId && state.selectedShift.day.isSame(day) }
                             >
                                 <div className={"shift-time-container"}
+                                     style = {{ position: "relative" }}
                                      onClick={
                                          this.handleShiftPlaceholderClick.bind(this,
                                          {
@@ -81,9 +85,21 @@ class ShiftListPage extends Component {
                                     <span>{moment.unix(state.shifts[shiftIdForDisplay[0]].startTime).format("HH")}</span>
                                      -
                                     <span>{moment.unix(state.shifts[shiftIdForDisplay[0]].endTime).format("HH")}</span>
+
+                                    <div className={"background"}
+                                        style = {{
+                                            position: "absolute",
+                                            top: 0,
+                                            width: (state.shifts[shiftIdForDisplay[0]].endTime - state.shifts[shiftIdForDisplay[0]].startTime)/864 + "%",
+                                            left: ( state.shifts[shiftIdForDisplay[0]].startTime - moment(day).startOf('day').unix() )/864 + "%",
+                                            height: "100%",
+                                            backgroundColor: "darkseagreen",
+                                            zIndex: "-1"
+                                        }}
+                                        //onClick={ console.log(state.shifts[shiftIdForDisplay[0]].endTime - state.shifts[shiftIdForDisplay[0]].startTime) }
+                                    />
                                 </div>
                             </Popover>
-
                         </td>
                     )
                 }
