@@ -22,6 +22,8 @@ const initialState = {
 
 export default (state = initialState, action) => {
 
+
+
     switch (action.type) {
         case LOAD_PENDING:
             return {
@@ -59,9 +61,9 @@ export default (state = initialState, action) => {
                 ...state,
                 displayPeriod: action.payload.decrement
                     ?
-                    moment.range(moment(state.displayPeriod.start).add( -([...state.displayPeriod.by('day')].length), 'day'), moment(state.displayPeriod.start).add(-1, 'day'))
+                    moment.range(moment(state.displayPeriod.start).add( 0 - [...state.displayPeriod.by('day')].length, 'day').startOf('day'), moment(state.displayPeriod.start).add(-1, 'day').startOf('day'))
                     :
-                    moment.range(moment(state.displayPeriod.end).add(1, 'day'), moment(state.displayPeriod.end).add([...state.displayPeriod.by('day')].length, 'day'))
+                    moment.range(moment(state.displayPeriod.end).add(1, 'day').startOf('day'), moment(state.displayPeriod.end).add([...state.displayPeriod.by('day')].length, 'day').startOf('day'))
             }
 
         default:

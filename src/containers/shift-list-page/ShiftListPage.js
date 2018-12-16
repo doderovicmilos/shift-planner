@@ -23,7 +23,7 @@ class ShiftListPage extends Component {
 
     handleIncrementButtonClick(args)
     {
-        this.props.actions.icrementDisplayPeriod(args);
+        this.props.actions.incrementDisplayPeriod(args);
     }
 
     handleShiftPlaceholderClick(args)
@@ -49,6 +49,7 @@ class ShiftListPage extends Component {
         const { state, actions } = this.props;
 
         const shiftIdsForEmployeeForDay = (shifts,  employeeId, day) => Object.keys(shifts).filter( shiftId => shifts[shiftId].employeeId === employeeId && moment.unix(shifts[shiftId].endTime).startOf('day').isSame(day) );
+
 
         const rowForUser = (shifts, displayPeriod, employeeId) =>
         {
@@ -181,7 +182,7 @@ class ShiftListPage extends Component {
                     </div>
 
                     <div className="btn-group middle">
-                        <button className="btn btn-sm" onClick={ this.handleIncrementButtonClick.bind(this, { decrement:true }) }> previous </button>
+                        <button className="btn btn-sm" onClick={ this.handleIncrementButtonClick.bind(this, { decrement: true }) }> previous </button>
                         <button className="btn btn-sm" onClick={ this.handleIncrementButtonClick.bind(this) }> next </button>
                     </div>
 

@@ -14,16 +14,13 @@ import axios from 'axios';
 import moment from 'moment';
 
 
-window.axios = axios;
-window.moment = moment;
-
 export const loadShifts = () => {
     return (dispatch, getState) => {
         const { start, end } =  getState().list.displayPeriod;
         dispatch({
             type: LOAD_PENDING
         });
-        axios.get(firebase + shifts, {
+        axios.get('https://shift-planner-a7968.firebaseio.com/shifts.json', {
             params: {
                 orderBy: '"endTime"',
                 startAt: start.unix(),
@@ -52,7 +49,7 @@ export const changeDisplayPeriodSize = ({value = 1, increment = "day", direction
     }
 };
 
-export const icrementDisplayPeriod = ({ decrement= false }={}) => {
+export const incrementDisplayPeriod = ({decrement = false}={}) => {
     return dispatch => {
         dispatch({
             type: DISPLAY_PERIOD_INCREMENT,
