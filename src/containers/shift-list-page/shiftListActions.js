@@ -52,7 +52,6 @@ export const changeDisplayPeriod = ({value = 1, increment = "day", direction = "
 };
 
 export const selectShift = ({shiftId, day, employeeId, startTime, endTime}) => {
-    //console.log({shiftId, day, employeeId, startTime, endTime});
     return {
         type: SHIFT_SELECTED,
         payload: { shiftId, day, employeeId, startTime, endTime }
@@ -60,9 +59,7 @@ export const selectShift = ({shiftId, day, employeeId, startTime, endTime}) => {
 };
 
 
-export const createShift = ({shiftId, employeeId, startTime, endTime}) => {
-
-    console.log({shiftId, employeeId, startTime, endTime});
+export const createEditShift = ({shiftId, employeeId, startTime, endTime}) => {
 
     const data = { employeeId, startTime, endTime };
 
@@ -89,10 +86,6 @@ export const createShift = ({shiftId, employeeId, startTime, endTime}) => {
         });
     }
 
-
-
-
-    //console.log(arguments);
 }
 
 export const updateShift = ({shiftId, day, employeeId, startTime, endTime}) => {

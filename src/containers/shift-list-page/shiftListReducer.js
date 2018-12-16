@@ -12,7 +12,7 @@ const moment = extendMoment(Moment);
 
 const initialState = {
     shifts: {},
-    displayPeriod: moment.range(moment().startOf('week'), moment().endOf('week')),
+    displayPeriod: moment.range(moment().startOf('isoWeek'), moment().endOf('isoWeek')),
     loading: false,
     loaded: false,
     selectedShift: {}

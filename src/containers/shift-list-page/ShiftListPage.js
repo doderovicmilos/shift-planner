@@ -5,10 +5,8 @@ import * as actions from './shiftListActions'
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 import Popover from 'react-popover';
-import ShiftForm from './components/ShiftForm'
-
+import ShiftEntryForm from './components/ShiftEntryForm'
 const moment = extendMoment(Moment)
-
 
 
 class ShiftListPage extends Component {
@@ -28,25 +26,22 @@ class ShiftListPage extends Component {
         this.props.actions.selectShift(args)
     }
 
-    handleFormSubmit(data){
-
+    handleFormSubmit(data)
+    {
         const { shiftId, day, employeeId } = this.props.state.selectedShift;
-
         const startTime = day.clone().hours(data.startTime).unix();
         const endTime = day.clone().hours(data.endTime).unix();
+        this.props.actions.createEditShift({ shiftId, employeeId, startTime, endTime });
+    }
 
-        //if(this.props.state.selectedShift.shiftId) this.props.actions.updateShift({ ...data });
-        //console.log( moment.unix(startTime).format() );
-        //console.log( moment.unix(endTime).format() );
-
-
-        this.props.actions.createShift({ shiftId, employeeId, startTime, endTime });
-
+    handleFormCancel()
+    {
+        this.props.actions.selectShift({})
     }
 
     render()
     {
-        const { state } = this.props;
+        const { state, actions } = this.props;
 
         const shiftIdsForEmployeeForDay = (shifts,  employeeId, day) => Object.keys(shifts).filter( shiftId => shifts[shiftId].employeeId === employeeId && moment.unix(shifts[shiftId].endTime).startOf('day').isSame(day) );
 
@@ -63,9 +58,11 @@ class ShiftListPage extends Component {
                     return (
                         <td key={day.format('DD-MM-YY')} className={"full"}>
                             <Popover
-                                body={(<ShiftForm
-                                    onSubmit={this.handleFormSubmit.bind(this)}
-                                    enableReinitialise={true}
+                                body={(<ShiftEntryForm
+                                    onSubmit={ this.handleFormSubmit.bind(this) }
+                                    enableReinitialise={ true }
+                                    initialValues = { state.selectedShift }
+                                    onCancel = { this.handleFormCancel.bind(this) }
                                 />)}
                                 isOpen={ state.selectedShift && state.selectedShift.day && state.selectedShift.employeeId && state.selectedShift.employeeId === employeeId && state.selectedShift.day.isSame(day) }
                             >
@@ -77,15 +74,14 @@ class ShiftListPage extends Component {
                                              shiftId: shiftIdForDisplay[0],
                                              day,
                                              employeeId,
-                                             startTime: moment.unix(state.shifts[shiftIdForDisplay[0]].startTime),
-                                             endTime: moment.unix(state.shifts[shiftIdForDisplay[0]].endTime)
+                                             startTime: moment.unix(state.shifts[shiftIdForDisplay[0]].startTime).hours(),
+                                             endTime: moment.unix(state.shifts[shiftIdForDisplay[0]].endTime).hours()
                                          })
                                      }
                                 >
                                     <span>{moment.unix(state.shifts[shiftIdForDisplay[0]].startTime).format("HH")}</span>
                                      -
                                     <span>{moment.unix(state.shifts[shiftIdForDisplay[0]].endTime).format("HH")}</span>
-
                                     <div className={"background"}
                                         style = {{
                                             position: "absolute",
@@ -96,7 +92,6 @@ class ShiftListPage extends Component {
                                             backgroundColor: "darkseagreen",
                                             zIndex: "-1"
                                         }}
-                                        //onClick={ console.log(state.shifts[shiftIdForDisplay[0]].endTime - state.shifts[shiftIdForDisplay[0]].startTime) }
                                     />
                                 </div>
                             </Popover>
@@ -108,11 +103,13 @@ class ShiftListPage extends Component {
                     return (
                         <td key={day.format('DD-MM-YY')} className={"empty"}>
                             <Popover
-                                body={(<ShiftForm
-                                    onSubmit={this.handleFormSubmit.bind(this)}
-                                    enableReinitialise={true}
+                                body={(<ShiftEntryForm
+                                    onSubmit={ this.handleFormSubmit.bind(this) }
+                                    enableReinitialise={ true }
+                                    initialValues = {  state.selectedShift }
+                                    onCancel = { this.handleFormCancel.bind(this) }
                                 />)}
-                                isOpen={state.selectedShift && state.selectedShift.day && state.selectedShift.employeeId && state.selectedShift.employeeId === employeeId && state.selectedShift.day.isSame(day)}
+                                isOpen={state.selectedShift && state.selectedShift.day && state.selectedShift.employeeId && state.selectedShift.employeeId === employeeId && state.selectedShift.day.isSame(day) }
                             >
                                 <div className={"shift-time-container"}
                                      onClick={ this.handleShiftPlaceholderClick.bind(this,
@@ -120,8 +117,8 @@ class ShiftListPage extends Component {
                                          shiftId: null,
                                          day,
                                          employeeId,
-                                         startTime: null,
-                                         endTime: null
+                                         startTime: moment().startOf('day').hours(8).hours(),
+                                         endTime: moment().startOf('day').hours(16).hours()
                                      })}
                                 > -
                                 </div>
@@ -134,7 +131,9 @@ class ShiftListPage extends Component {
 
         const displayPeriod = [ ...state.displayPeriod.by('day') ];
 
-        const employeeIds = [ ...new Set(Object.keys(state.shifts).map( shiftId => state.shifts[shiftId].employeeId )) ];
+        //const employeeIds = [ ...new Set(Object.keys(state.shifts).map( shiftId => state.shifts[shiftId].employeeId )) ];
+
+        const employeeIds = [ 1, 2, 3, 4, 5 ];
 
         const tableRows = employeeIds.map(employeeId => (
             <tr key={employeeId}>
@@ -142,13 +141,13 @@ class ShiftListPage extends Component {
             </tr>)
         );
 
-        const tableHeader = displayPeriod.map( ment =>
-            (<th key={ ment.format('DD-MM-YY')} >
+        const tableHeader = displayPeriod.map( day =>
+            (<th key={ day.format('DD-MM-YY')} className =  { day.isSame(moment().startOf('day')) ? "today" : "" } >
                 <div className="day-month-date">
-                    <div className="day">{ ment.format('ddd') }</div>
+                    <div className="day">{ day.format('ddd') }</div>
                     <div className="month-date">
-                        <div className="month">{ ment.format('MMM') }</div>
-                        <div className="date">{ ment.format('DD') }</div>
+                        <div className="month">{ day.format('MMM') }</div>
+                        <div className="date">{ day.format('DD') }</div>
                     </div>
                 </div>
             </th>)
@@ -176,7 +175,6 @@ class ShiftListPage extends Component {
                         <button className="btn btn-sm" onClick={ this.handlePeriodButtonClick.bind(this, {direction: "left", value:-1}) }
                                                        disabled={ displayPeriod.length <= 1 }>-</button>
                     </div>
-
                     <div className="btn-group right">
                         <button className="btn btn-sm" onClick={ this.handlePeriodButtonClick.bind(this, {direction: "right", value:-1}) }
                                                        disabled={ displayPeriod.length <= 1 }>-</button>
