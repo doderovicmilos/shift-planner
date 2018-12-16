@@ -18,7 +18,12 @@ class ShiftListPage extends Component {
 
     handlePeriodButtonClick(args)
     {
-        this.props.actions.changeDisplayPeriod(args);
+        this.props.actions.changeDisplayPeriodSize(args);
+    }
+
+    handleIncrementButtonClick(args)
+    {
+        this.props.actions.icrementDisplayPeriod(args);
     }
 
     handleShiftPlaceholderClick(args)
@@ -52,8 +57,6 @@ class ShiftListPage extends Component {
                 if (shiftIdsForEmployeeForDay(shifts, employeeId, day) && shiftIdsForEmployeeForDay(shifts, employeeId, day)[0])
                 {
                     const shiftIdForDisplay = shiftIdsForEmployeeForDay(shifts, employeeId, day);
-
-                    console.log(((state.shifts[shiftIdForDisplay[0]].endTime - state.shifts[shiftIdForDisplay[0]].startTime)/864));
 
                     return (
                         <td key={day.format('DD-MM-YY')} className={"full"}>
@@ -169,17 +172,27 @@ class ShiftListPage extends Component {
                     </table>
                 </div>
 
-                <div className="add-remove-button-groups">
+                <div className="navigation-button-groups">
+
                     <div className="btn-group left">
                         <button className="btn btn-sm" onClick={ this.handlePeriodButtonClick.bind(this, {direction: "left", value: 1}) }>+</button>
                         <button className="btn btn-sm" onClick={ this.handlePeriodButtonClick.bind(this, {direction: "left", value:-1}) }
                                                        disabled={ displayPeriod.length <= 1 }>-</button>
                     </div>
+
+                    <div className="btn-group middle">
+                        <button className="btn btn-sm" onClick={ this.handleIncrementButtonClick.bind(this, { decrement:true }) }> previous </button>
+                        <button className="btn btn-sm" onClick={ this.handleIncrementButtonClick.bind(this) }> next </button>
+                    </div>
+
                     <div className="btn-group right">
                         <button className="btn btn-sm" onClick={ this.handlePeriodButtonClick.bind(this, {direction: "right", value:-1}) }
                                                        disabled={ displayPeriod.length <= 1 }>-</button>
                         <button className="btn btn-sm" onClick={ this.handlePeriodButtonClick.bind(this, {direction: "right", value: 1}) }>+</button>
                     </div>
+
+
+
                 </div>
             </div>
         )

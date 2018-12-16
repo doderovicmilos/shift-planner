@@ -2,8 +2,9 @@ import
 {
     LOAD_PENDING,
     LOAD_RESOLVED,
-    DISPLAY_PERIOD_CHANGE,
-    SHIFT_SELECTED
+    DISPLAY_PERIOD_SIZE_CHANGE,
+    SHIFT_SELECTED,
+    DISPLAY_PERIOD_INCREMENT
 } from './shiftListActionTypes';
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
@@ -37,7 +38,7 @@ export default (state = initialState, action) => {
             }
 
 
-        case DISPLAY_PERIOD_CHANGE:
+        case DISPLAY_PERIOD_SIZE_CHANGE:
             return {
                 ...state,
                 displayPeriod: action.payload.direction === 'right'
@@ -53,31 +54,15 @@ export default (state = initialState, action) => {
                 selectedShift: { ...action.payload }
             }
 
-        // case LOAD_EVENTS_RESOLVED:
-        //     return {
-        //         ...state,
-        //         events: {...action.payload},
-        //         visibleDetails: []
-        //     }
-        //
-        // case CLEAR_EVENTS:
-        //     return {
-        //         ...state,
-        //         events: {},
-        //         visibleDetails: []
-        //     }
-        //
-        // case SET_VISIBLE_DETAILS:
-        //     return {
-        //         ...state,
-        //         visibleDetails: [...state.visibleDetails, action.payload]
-        //     }
-        //
-        // case REMOVE_VISIBLE_DETAILS:
-        //     return {
-        //         ...state,
-        //         visibleDetails: [...state.visibleDetails.filter(el => el !== action.payload)]
-        //     }
+        case DISPLAY_PERIOD_INCREMENT:
+            return {
+                ...state,
+                displayPeriod: action.payload.decrement
+                    ?
+                    moment.range(moment(state.displayPeriod.start).add( -([...state.displayPeriod.by('day')].length), 'day'), moment(state.displayPeriod.start).add(-1, 'day'))
+                    :
+                    moment.range(moment(state.displayPeriod.end).add(1, 'day'), moment(state.displayPeriod.end).add([...state.displayPeriod.by('day')].length, 'day'))
+            }
 
         default:
             return state

@@ -2,10 +2,11 @@ import
 {
     LOAD_PENDING,
     LOAD_RESOLVED,
-    DISPLAY_PERIOD_CHANGE,
+    DISPLAY_PERIOD_SIZE_CHANGE,
     CREATE_PENDING,
     CREATE_RESOLVED,
-    SHIFT_SELECTED
+    SHIFT_SELECTED,
+    DISPLAY_PERIOD_INCREMENT
 } from './shiftListActionTypes';
 import {url, key, firebase} from '../../util/constants';
 import {cities, events, shifts} from '../../util/restEndPoints';
@@ -41,11 +42,21 @@ export const loadShifts = () => {
     }
 };
 
-export const changeDisplayPeriod = ({value = 1, increment = "day", direction = "right"}={}) => {
+export const changeDisplayPeriodSize = ({value = 1, increment = "day", direction = "right"}={}) => {
     return dispatch => {
         dispatch({
-            type: DISPLAY_PERIOD_CHANGE,
+            type: DISPLAY_PERIOD_SIZE_CHANGE,
             payload: { value, increment, direction }
+        });
+        dispatch(loadShifts());
+    }
+};
+
+export const icrementDisplayPeriod = ({ decrement= false }={}) => {
+    return dispatch => {
+        dispatch({
+            type: DISPLAY_PERIOD_INCREMENT,
+            payload: { decrement }
         });
         dispatch(loadShifts());
     }
@@ -57,7 +68,6 @@ export const selectShift = ({shiftId, day, employeeId, startTime, endTime}) => {
         payload: { shiftId, day, employeeId, startTime, endTime }
     }
 };
-
 
 export const createEditShift = ({shiftId, employeeId, startTime, endTime}) => {
 
@@ -85,62 +95,4 @@ export const createEditShift = ({shiftId, employeeId, startTime, endTime}) => {
             console.error(error);
         });
     }
-
 }
-
-export const updateShift = ({shiftId, day, employeeId, startTime, endTime}) => {
-
-    console.log(shiftId, day, employeeId, startTime, endTime);
-
-    return dispatch => {
-
-    }
-
-
-    //console.log(arguments);
-}
-
-// export const loadEventsForCoordinates = (lon, lat) => {
-//     return dispatch => {
-//         dispatch({
-//             type: LOAD_EVENTS_PENDING
-//         });
-//         axios.get(url + events, {
-//             params: {
-//                 key: key,
-//                 lon: lon,
-//                 lat: lat
-//             }
-//         })
-//         .then(function (response) {
-//             dispatch({
-//                 type: LOAD_EVENTS_RESOLVED,
-//                 payload: response.data
-//             })
-//         })
-//         .catch(function (error) {
-//             console.error(error);
-//         })
-//     }
-// };
-//
-// export const clearEvents = () => {
-//     return {
-//         type: CLEAR_EVENTS
-//     }
-// };
-//
-// export const setVisibleDetails = (eventId) => {
-//     return {
-//         type: SET_VISIBLE_DETAILS,
-//         payload: eventId
-//     }
-// };
-//
-// export const removeVisibleDetails = (eventId) => {
-//     return {
-//         type: REMOVE_VISIBLE_DETAILS,
-//         payload: eventId
-//     }
-// };
-
