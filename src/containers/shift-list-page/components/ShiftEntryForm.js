@@ -78,7 +78,7 @@ const ShiftEntryForm = props => {
 
                     }}>
                         <button type="submit"
-                                disabled={pristine || submitting}
+                                disabled={submitting}
                                 style={{marginTop: '26px'}}
                                 className="btn btn-primary btn-sm"
                         >
