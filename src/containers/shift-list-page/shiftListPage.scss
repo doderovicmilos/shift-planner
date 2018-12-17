@@ -7,6 +7,10 @@
     margin-top: 60px;
     overflow-x: auto;
     table {
+      border-right: solid 1px #dee2e6;
+      border-left: solid 1px #dee2e6;
+      border-bottom: solid 1px #dee2e6;
+    ;
       thead {
         th:first-child{
           width: 15px;
