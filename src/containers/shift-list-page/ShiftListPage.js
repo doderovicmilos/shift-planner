@@ -113,7 +113,7 @@ class ShiftListPage extends Component {
                                     initialValues = {  state.selectedShift }
                                     onCancel = { this.handleFormCancel.bind(this) }
                                 />)}
-                                isOpen={state.selectedShift && state.selectedShift.day && state.selectedShift.employeeId && state.selectedShift.employeeId === employeeId && state.selectedShift.day.isSame(day) }
+                                isOpen={ state.selectedShift && state.selectedShift.day && state.selectedShift.employeeId && state.selectedShift.employeeId === employeeId && state.selectedShift.day.isSame(day) }
                             >
                                 <div className={"shift-time-container"}
                                      onClick={ this.handleShiftPlaceholderClick.bind(this,
@@ -141,7 +141,7 @@ class ShiftListPage extends Component {
 
         const tableRows = employeeIds.map(employeeId => (
             <tr key={employeeId}>
-                <td>@{employeeId}</td>
+                <td>@employee{employeeId}</td>
                 { rowForUser(state.shifts, displayPeriod, employeeId) }
             </tr>)
         );
