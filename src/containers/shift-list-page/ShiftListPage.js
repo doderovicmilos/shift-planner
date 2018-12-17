@@ -141,6 +141,7 @@ class ShiftListPage extends Component {
 
         const tableRows = employeeIds.map(employeeId => (
             <tr key={employeeId}>
+                <td>@{employeeId}</td>
                 { rowForUser(state.shifts, displayPeriod, employeeId) }
             </tr>)
         );
@@ -164,6 +165,7 @@ class ShiftListPage extends Component {
                     <table className={"table"}>
                         <thead>
                             <tr>
+                                <th>-</th>
                                 { tableHeader }
                             </tr>
                         </thead>

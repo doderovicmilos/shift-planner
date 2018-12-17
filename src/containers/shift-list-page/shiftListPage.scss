@@ -8,6 +8,12 @@
     overflow-x: auto;
     table {
       thead {
+        th:first-child{
+          width: 15px;
+          min-width: 15px;
+          max-width: 15px;
+          border-left: none;
+        }
         th {
           &.today{
             background-color: #7bcaca;
@@ -41,17 +47,19 @@
       }
 
       tbody{
+        td:first-child{
+          width: 15px;
+          min-width: 15px;
+          max-width: 15px;
+          border-left: none;
+        }
         td {
           text-align: center;
           font-size: 11px;
           padding: 0;
           width: 26px;
           height: 17px;
-          //border-right: solid 1px #333333;
           border-left: solid 1px #dadadada;
-          &.full {
-            //background-color: darkseagreen;
-          }
         }
       }
     }
