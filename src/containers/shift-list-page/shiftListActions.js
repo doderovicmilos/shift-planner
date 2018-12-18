@@ -24,7 +24,7 @@ export const loadShifts = () => {
             params: {
                 orderBy: '"endTime"',
                 startAt: start.unix(),
-                endAt: end.unix()
+                endAt: end.clone().add(1, 'day').unix()
             }
         })
         .then(function (response) {

@@ -135,8 +135,6 @@ class ShiftListPage extends Component {
 
         const displayPeriod = [ ...state.displayPeriod.by('day') ];
 
-        //const employeeIds = [ ...new Set(Object.keys(state.shifts).map( shiftId => state.shifts[shiftId].employeeId )) ];
-
         const employeeIds = [ 1, 2, 3, 4, 5 ];
 
         const tableRows = employeeIds.map(employeeId => (
