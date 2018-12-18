@@ -5,7 +5,7 @@ const validator = values => {
 
     const errors = {}
 
-    if (values.startTime >= values.endTime) {
+    if ( Number(values.startTime) > Number(values.endTime) ) {
         errors.startEndTime = 'Shift end time value must be higher than shift start value!'
     }
 
