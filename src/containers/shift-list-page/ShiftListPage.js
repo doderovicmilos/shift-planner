@@ -93,7 +93,7 @@ class ShiftListPage extends Component {
                                             width: (state.shifts[shiftIdForDisplay[0]].endTime - state.shifts[shiftIdForDisplay[0]].startTime)/864 + "%",
                                             left: ( state.shifts[shiftIdForDisplay[0]].startTime - moment(day).startOf('day').unix() )/864 + "%",
                                             height: "100%",
-                                            backgroundColor: "darkseagreen",
+                                            backgroundColor: '#b5c689',
                                             zIndex: "-1"
                                         }}
                                     />
