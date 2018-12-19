@@ -11,7 +11,10 @@ import
 import {url, key, firebase} from '../../util/constants';
 import {cities, events, shifts} from '../../util/restEndPoints';
 import axios from 'axios';
-import moment from 'moment';
+
+const   put= 'put',
+        post = 'post',
+        json = '.json';
 
 
 export const loadShifts = () => {
@@ -20,7 +23,7 @@ export const loadShifts = () => {
         dispatch({
             type: LOAD_PENDING
         });
-        axios.get('https://shift-planner-a7968.firebaseio.com/shifts.json', {
+        axios.get(firebase + shifts + json, {
             params: {
                 orderBy: '"endTime"',
                 startAt: start.unix(),
@@ -75,8 +78,8 @@ export const createEditShift = ({shiftId, employeeId, startTime, endTime}) => {
             type: CREATE_PENDING
         });
         axios({
-            method: shiftId ? 'put' : 'post',
-            url: shiftId ? "https://shift-planner-a7968.firebaseio.com/shifts/" + shiftId + ".json" : "https://shift-planner-a7968.firebaseio.com/shifts.json",
+            method: shiftId ? put : post,
+            url: shiftId ? firebase + shifts + '/' + shiftId + json : firebase + shifts + json,
             data
         })
         .then(function (response) {
@@ -92,4 +95,4 @@ export const createEditShift = ({shiftId, employeeId, startTime, endTime}) => {
             console.error(error);
         });
     }
-}
+};
